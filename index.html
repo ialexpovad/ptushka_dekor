@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ptushka Dekor — цветы, букеты и декор | Хойники</title>
+  <meta name="description" content="Ptushka Dekor — авторские букеты, свадебный декор и доставка цветов в Хойниках. Заказ за 1–2 минуты. Ул. Жукова 2, Хойники 247618." />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- OwlCarousel -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+  <!-- App styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body id="top">
+  <!-- Верхняя плашка -->
+  <div class="topbar">
+    <marquee class="marque" direction="left" data-i18n="topbar_msg">
+      Букеты с доставкой по городу Хойники — быстрый заказ на сайте 🌸
+    </marquee>
+  </div>
+
+  <!-- Навигация -->
+  <header>
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#top" aria-label="Ptushka Dekor">
+          <h1 class="logo">Ptushka <span class="clrchange">Dekor</span></h1>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item"><a class="nav-link" href="#about" data-i18n="nav_about">О нас</a></li>
+            <li class="nav-item"><a class="nav-link" href="#product" data-i18n="nav_catalog">Каталог</a></li>
+            <li class="nav-item"><a class="nav-link" href="#delivery" data-i18n="nav_delivery">Доставка</a></li>
+            <li class="nav-item"><a class="nav-link" href="#review" data-i18n="nav_reviews">Отзывы</a></li>
+            <li class="nav-item"><a class="nav-link" href="#faq" data-i18n="nav_faq">FAQ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav_contacts">Контакты</a></li>
+          </ul>
+
+          <div class="header-tools">
+            <select id="langSelect" class="lang-select" aria-label="Language">
+              <option value="ru">RU</option>
+              <option value="be">BE</option>
+            </select>
+
+            <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">
+              <i class="fa-solid fa-moon"></i>
+            </button>
+
+            <a class="nav-link p-0" href="#" id="openCart"
+               data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas" aria-label="Корзина">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span class="badge bg-danger ms-1" id="cartCount">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="section1">
+    <div class="hero-ornament"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <div class="hero-tags">
+            <span class="tag" data-i18n="hero_tag_city">Хойники • Доставка</span>
+            <span class="tag" data-i18n="hero_tag_fresh">Свежие каждый день</span>
+          </div>
+          <h2 class="eyebrow" data-i18n="hero_eyebrow">Авторские композиции и декор</h2>
+          <h1 data-i18n="hero_h1">Свежие цветы каждый день</h1>
+          <p class="lead" data-i18n="hero_p">Выберите букет из каталога и оформите заказ за 1–2 минуты. Доставим по городу или подготовим к самовывозу.</p>
+          <div class="hero-cta">
+            <a href="#product" class="links" data-i18n="hero_cta">Смотреть каталог</a>
+            <a href="#contact" class="links links-ghost" data-i18n="hero_cta2">Написать нам</a>
+          </div>
+          <div class="hero-badges">
+            <div class="badge-soft"><i class="fa-solid fa-truck-fast"></i><span data-i18n="usp_fast">Доставка в день заказа</span></div>
+            <div class="badge-soft"><i class="fa-solid fa-leaf"></i><span data-i18n="usp_fresh">Только свежие цветы</span></div>
+            <div class="badge-soft"><i class="fa-solid fa-wand-magic-sparkles"></i><span data-i18n="usp_custom">Индивидуальные композиции</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- О нас -->
+  <section class="section2" id="about">
+    <div class="container">
+      <div class="row"><div class="col-12">
+        <h1 class="mainheading"><span class="clrchange" data-i18n="about_h1_a">О</span> <span data-i18n="about_h1_b">нас</span></h1>
+      </div></div>
+
+      <div class="row align-items-center gy-4">
+        <div class="col-lg-5">
+          <div class="card-glass p-2">
+            <img src="./assets/about.webp" alt="Ptushka Dekor" class="rounded-4">
+            <div class="clrchangeback"><h3 data-i18n="about_card">Любовь к деталям</h3></div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <h2 class="mb-2" data-i18n="about_why">Почему выбирают нас</h2>
+          <p data-i18n="about_p1">Работаем с живыми цветами и бережной упаковкой. Собираем композиции под бюджет, повод и стиль.</p>
+          <p class="mb-4" data-i18n="about_p2">Быстрые согласования в мессенджерах и чёткие сроки доставки.</p>
+
+          <div class="benefits">
+            <div class="benefit">
+              <span class="icon-stack"><i class="fa-solid fa-gift"></i></span>
+              <div><strong data-i18n="benefit_range_t">От классики до экзотики</strong><br><span class="text-muted" data-i18n="benefit_range_d">Букеты/композиции под любой повод</span></div>
+            </div>
+            <div class="benefit">
+              <span class="icon-stack"><i class="fa-solid fa-rings-wedding"></i></span>
+              <div><strong data-i18n="benefit_bride_t">Букет невесты</strong><br><span class="text-muted" data-i18n="benefit_bride_d">Свадебная флористика и декор</span></div>
+            </div>
+            <div class="benefit">
+              <span class="icon-stack"><i class="fa-solid fa-truck"></i></span>
+              <div><strong data-i18n="benefit_delivery_t">Заказ и доставка</strong><br><span class="text-muted" data-i18n="benefit_delivery_d">Хойники и ближайшие районы</span></div>
+            </div>
+          </div>
+
+          <a href="#product" class="links mt-3" data-i18n="about_cta">В каталог</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Плитки преимуществ -->
+  <section class="section3">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-sm-6 col-lg-3"><div class="innercol"><div class="txtwithicon">
+          <div class="iconcol"><i class="fa-solid fa-truck-fast"></i></div>
+          <div class="txtcol"><h4 data-i18n="feat_delivery">Доставка</h4><p data-i18n="feat_city">По городу</p></div>
+        </div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="innercol"><div class="txtwithicon">
+          <div class="iconcol"><i class="fa-solid fa-rotate-left"></i></div>
+          <div class="txtcol"><h4 data-i18n="feat_exchange">Обмен</h4><p data-i18n="feat_as_agreed">По договорённости</p></div>
+        </div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="innercol"><div class="txtwithicon">
+          <div class="iconcol"><i class="fa-solid fa-gift"></i></div>
+          <div class="txtcol"><h4 data-i18n="feat_cards">Открытки</h4><p data-i18n="feat_ribbons">и ленточки</p></div>
+        </div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="innercol"><div class="txtwithicon">
+          <div class="iconcol"><i class="fa-solid fa-lock"></i></div>
+          <div class="txtcol"><h4 data-i18n="feat_safe">Надёжно</h4><p data-i18n="feat_careful">и аккуратно</p></div>
+        </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Каталог -->
+  <section class="section4" id="product">
+    <div class="container">
+      <div class="row"><div class="col-12"><h1><span data-i18n="catalog_h1">Наши букеты</span></h1></div></div>
+
+      <!-- Чипы-поводы -->
+      <div class="chipbar" aria-label="Поводы">
+        <button class="chip chip-cat" data-cat="" data-i18n="chip_all">Все</button>
+        <button class="chip chip-cat" data-cat="Розы" data-i18n="chip_roses">Розы</button>
+        <button class="chip chip-cat" data-cat="Тюльпаны" data-i18n="chip_tulips">Тюльпаны</button>
+        <button class="chip chip-cat" data-cat="Пионы" data-i18n="chip_peonies">Пионы</button>
+        <button class="chip chip-cat" data-cat="Свадьба" data-i18n="chip_wedding">Свадьба</button>
+        <button class="chip chip-cat" data-cat="Экзотика" data-i18n="chip_exotic">Экзотика</button>
+      </div>
+
+      <!-- Фильтры -->
+      <div class="row mb-3 g-2">
+        <div class="col-sm-5">
+          <input id="searchInput" class="form-control" type="search" data-i18n-placeholder="filters_search_placeholder" placeholder="Поиск по названию…">
+        </div>
+        <div class="col-sm-4">
+          <select id="categorySelect" class="form-select">
+            <option value="" data-i18n="filters_all_categories">Все категории</option>
+          </select>
+        </div>
+        <div class="col-sm-3 text-sm-end">
+          <button class="btn btn-outline-secondary me-2" id="resetFilters" data-i18n="filters_reset">Сброс</button>
+          <button class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+            <span data-i18n="filters_cart_button">Корзина</span> (<span id="cartCountInline">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Сетка -->
+      <div class="row" id="products-grid" aria-live="polite"></div>
+
+      <!-- Пусто -->
+      <div class="text-center py-5 d-none" id="emptyCatalog">
+        <p data-i18n="empty_catalog">Каталог скоро пополнится 🌸</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Доставка / Хойники -->
+  <section class="section-delivery" id="delivery">
+    <div class="container">
+      <div class="row"><div class="col-12">
+        <h1 class="mainheading"><span class="clrchange" data-i18n="delivery_h1_a">Доставка</span> <span data-i18n="delivery_h1_b">в Хойниках</span></h1>
+      </div></div>
+
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-6">
+          <div class="card-gradient h-100">
+            <h3 class="mb-3" data-i18n="delivery_title">Заказ и доставка букетов — Хойники</h3>
+            <ul class="list-unstyled mb-3">
+              <li><i class="fa-solid fa-check me-2"></i><span data-i18n="delivery_point1">Букеты/композиции: от классики до экзотики</span></li>
+              <li><i class="fa-solid fa-check me-2"></i><span data-i18n="delivery_point2">Букет невесты, свадебный декор</span></li>
+              <li><i class="fa-solid fa-check me-2"></i><span data-i18n="delivery_point3">Самовывоз или курьером по городу</span></li>
+            </ul>
+            <div class="d-flex flex-wrap gap-2">
+              <a href="#contact" class="links" data-i18n="delivery_btn1">Сделать заказ</a>
+              <a href="#product" class="links links-ghost" data-i18n="delivery_btn2">Смотреть каталог</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-surface h-100">
+            <h3 class="mb-3" data-i18n="delivery_contacts">Контакты</h3>
+            <div class="row g-3">
+              <div class="col-12">
+                <i class="fa-solid fa-location-dot me-2"></i>
+                <strong data-i18n="delivery_address_t">Адрес:</strong>
+                <span data-i18n="delivery_address_v">улица Жукова 2, Хойники 247618</span>
+              </div>
+              <div class="col-12">
+                <i class="fa-solid fa-phone me-2"></i>
+                <strong data-i18n="delivery_phone_t">Телефон:</strong>
+                <a href="tel:+375293874824">+375 (29) 387-48-24</a>
+              </div>
+              <div class="col-12">
+                <i class="fa-regular fa-clock me-2"></i>
+                <strong data-i18n="delivery_hours_t">Время:</strong>
+                <span data-i18n="delivery_hours_v">ежедневно 8:30–18:30</span>
+              </div>
+              <div class="col-12">
+                <div class="socials">
+                  <a href="#" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                  <a href="#" aria-label="Viber"><i class="fa-brands fa-viber"></i></a>
+                  <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                  <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mt-2" data-i18n="delivery_note">Позвоните нам — подскажем по составу, бюджету и срокам доставки.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Отзывы -->
+  <section class="section5" id="review">
+    <div class="container">
+      <div class="row"><div class="col-12"><h1 class="mainheading"><span data-i18n="reviews_h1">Отзывы клиентов</span></h1></div></div>
+      <div class="row"><div class="col-12">
+        <div class="owl-carousel client-testimonial-carousel">
+          <div class="single-testimonial-item"><div class="reviewinner">
+            <ul class="ratings"><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li></ul>
+            <p data-i18n="rev_1">Красиво, вовремя, и запах — восторг!</p>
+            <div class="txtwithicon"><div class="iconcol"><img src="./assets/avatar2.png" alt=""></div><div class="txtcol"><h1>Марина</h1><p data-i18n="rev_buyer">Покупатель</p></div></div>
+          </div></div>
+          <div class="single-testimonial-item"><div class="reviewinner">
+            <ul class="ratings"><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li><li><i class="fa-solid fa-star"></i></li></ul>
+            <p data-i18n="rev_2">Собрали букет под бюджет и пожелания.</p>
+            <div class="txtwithicon"><div class="iconcol"><img src="./assets/avatar1.png" alt=""></div><div class="txtcol"><h1>Евгений</h1><p data-i18n="rev_buyer">Покупатель</p></div></div>
+          </div></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-faq" id="faq">
+    <div class="container">
+      <div class="row"><div class="col-12">
+        <h1 class="mainheading"><span class="clrchange" data-i18n="faq_h1_a">Ответы</span> <span data-i18n="faq_h1_b">на вопросы</span></h1>
+      </div></div>
+
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="q1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="true" aria-controls="a1" data-i18n="faq_q1">
+              Как оформить заказ?
+            </button>
+          </h2>
+          <div id="a1" class="accordion-collapse collapse show" aria-labelledby="q1" data-bs-parent="#faqAccordion">
+            <div class="accordion-body" data-i18n="faq_a1">
+              Выберите букет в каталоге, добавьте в корзину и оставьте заявку. Мы свяжемся, уточним детали и согласуем доставку.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="q2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2" data-i18n="faq_q2">
+              Вы делаете индивидуальные композиции?
+            </button>
+          </h2>
+          <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faqAccordion">
+            <div class="accordion-body" data-i18n="faq_a2">
+              Да. Под бюджет, цветовую гамму и повод. Подберём свежие сезонные цветы и упаковку.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="q3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3" data-i18n="faq_q3">
+              Как работает доставка по городу?
+            </button>
+          </h2>
+          <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faqAccordion">
+            <div class="accordion-body" data-i18n="faq_a3">
+              Доставляем по Хойникам в день заказа (при наличии цветов). Также есть самовывоз по адресу: ул. Жукова, 2.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Контакты -->
+  <section class="section6" id="contact">
+    <div class="container">
+      <div class="row"><div class="col-12"><h1 class="mainheading"><span class="clrchange" data-i18n="contact_h1_a">Свяжитесь</span> <span data-i18n="contact_h1_b">с нами</span></h1></div></div>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <form id="contactForm">
+            <input type="text" name="name" data-i18n-placeholder="contact_name" placeholder="Имя" required>
+            <input type="email" name="email" data-i18n-placeholder="contact_email" placeholder="Email" required>
+            <input type="tel" name="phone" data-i18n-placeholder="contact_phone" placeholder="Телефон" required>
+            <textarea name="message" rows="5" data-i18n-placeholder="contact_msg" placeholder="Сообщение"></textarea>
+            <button class="links" type="submit" data-i18n="contact_submit">Отправить</button>
+          </form>
+        </div>
+        <div class="col-lg-6">
+          <div class="contact-card">
+            <img src="./assets/contact.webp" alt="Контакты" class="contactimg">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-sm-3">
+          <h3 class="footerheadings" data-i18n="f_quick">Быстрые ссылки</h3>
+          <ul>
+            <li><a href="#top" data-i18n="f_home">Главная</a></li>
+            <li><a href="#about" data-i18n="f_about">О нас</a></li>
+            <li><a href="#product" data-i18n="f_catalog">Каталог</a></li>
+            <li><a href="#review" data-i18n="f_reviews">Отзывы</a></li>
+            <li><a href="#contact" data-i18n="f_contacts">Контакты</a></li>
+          </ul>
+        </div>
+
+        <div class="col-sm-3">
+          <h3 class="footerheadings" data-i18n="f_services">Услуги</h3>
+          <ul>
+            <li data-i18n="f_s1">Заказ и доставка букетов — <strong>Хойники</strong></li>
+            <li data-i18n="f_s2">Букеты/композиции: от классики до экзотики</li>
+            <li data-i18n="f_s3">Букет невесты</li>
+            <li data-i18n="f_s4">Свадебный декор</li>
+          </ul>
+        </div>
+
+        <div class="col-sm-3">
+          <h3 class="footerheadings" data-i18n="f_address_t">Адрес</h3>
+          <ul>
+            <li data-i18n="f_address_v1">улица Жукова, 2</li>
+            <li data-i18n="f_address_v2">г. Хойники, 247618</li>
+            <li data-i18n="f_address_v3">Беларусь</li>
+          </ul>
+        </div>
+
+        <div class="col-sm-3">
+          <h3 class="footerheadings" data-i18n="f_contact_t">Контакты</h3>
+          <ul>
+            <li><a href="tel:+375293874824">+375 (29) 387-48-24</a></li>
+            <li><a href="#contact" data-i18n="f_feedback">Форма обратной связи</a></li>
+          </ul>
+            <div class="d-flex align-items-center justify-content-center gap-2 mt-2">
+              <a href="#" aria-label="Telegram"><i class="fa-brands fa-telegram fa-lg"></i></a>
+              <a href="#" aria-label="Viber"><i class="fa-brands fa-viber fa-lg"></i></a>
+              <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp fa-lg"></i></a>
+              <a href="https://www.instagram.com/ptushka_dekor/" aria-label="Instagram"><i class="fa-brands fa-instagram fa-lg"></i></a>
+            </div>
+        </div>
+      </div>
+
+      <div class="row copy-right">
+        <div class="col-12">
+          <p>© <span id="year"></span> Ptushka Dekor. <span class="clrchange" data-i18n="rights">Все права защищены.</span></p>
+          <div class="topbtn">
+            <a href="#top" class="topbtninner" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Offcanvas: Cart -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasLabel" data-i18n="cart_title">Корзина</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <ul class="list-group mb-3" id="cartList"></ul>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <strong data-i18n="cart_total_label">Итого:</strong> <span id="cartTotal">0 BYN</span>
+      </div>
+      <button class="btn btn-dark w-100" id="openOrderModal" data-bs-toggle="modal" data-bs-target="#orderModal" disabled data-i18n="cart_checkout">Оформить заказ</button>
+    </div>
+  </div>
+
+  <!-- Modal: Order -->
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <form id="orderForm">
+          <div class="modal-header">
+            <h5 class="modal-title" data-i18n="order_title">Оформление заказа</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label" data-i18n="order_name_label">Имя*</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" data-i18n="order_phone_label">Телефон*</label>
+              <input type="tel" class="form-control" name="phone" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" data-i18n="order_dt_label">Доставка или самовывоз*</label>
+              <select class="form-select" name="delivery_type" required>
+                <option value="delivery" data-i18n="order_dt_delivery">Доставка</option>
+                <option value="pickup" data-i18n="order_dt_pickup">Самовывоз</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" data-i18n="order_address_label">Адрес (если доставка)</label>
+              <input type="text" class="form-control" name="address" placeholder="Улица, дом, подъезд, этаж">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" data-i18n="order_when_label">Желаемые дата и время</label>
+              <input type="text" class="form-control" name="date_time" placeholder="например, завтра 18:00">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" data-i18n="order_comment_label">Комментарии</label>
+              <textarea class="form-control" name="comment" rows="3" placeholder="Открытка, цветовая гамма, бюджет…"></textarea>
+            </div>
+
+            <input type="hidden" name="cart_json" id="cart_json" />
+            <div class="alert alert-secondary small" data-i18n="order_hint">
+              После подтверждения заказа вы получите реквизиты для оплаты или оплатите при получении.
+            </div>
+            <div class="alert alert-danger d-none" id="orderError"></div>
+            <div class="alert alert-success d-none" id="orderSuccess" data-i18n="order_success">Спасибо! Заявка отправлена.</div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-dark" id="submitOrderBtn" data-i18n="order_submit">Отправить заявку</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Скрипты -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

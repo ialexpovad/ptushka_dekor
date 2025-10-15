@@ -1,0 +1,500 @@
+/* =========================================
+   Ptushka Dekor — статический магазин
+   Тема (light/dark) + i18n (RU/BE) + чипы-фильтры
+   ========================================= */
+
+const CONFIG = {
+  SHEET_URL: "PASTE_SHEET_URL_HERE", // CSV / GVIZ / JSON
+  COLUMN_MAP: {
+    sku: "sku", title: "title", price: "price", old_price: "old_price",
+    image: "image", category: "category", active: "active", discount: "discount"
+  },
+  GS_WEB_APP_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL"
+};
+
+/* ===== i18n ===== */
+const I18N = {
+  ru: {
+    topbar_msg:"Букеты с доставкой по городу Хойники — быстрый заказ на сайте 🌸",
+    nav_about:"О нас", nav_catalog:"Каталог", nav_reviews:"Отзывы", nav_contacts:"Контакты", nav_delivery:"Доставка", nav_faq:"FAQ",
+
+    hero_tag_city:"Хойники • Доставка", hero_tag_fresh:"Свежие каждый день",
+    hero_eyebrow:"Авторские композиции и декор",
+    hero_h1:"Свежие цветы каждый день",
+    hero_p:"Выберите букет из каталога и оформите заказ за 1–2 минуты. Доставим по городу или подготовим к самовывозу.",
+    hero_cta:"Смотреть каталог", hero_cta2:"Написать нам",
+
+    usp_fast:"Доставка в день заказа", usp_fresh:"Только свежие цветы", usp_custom:"Индивидуальные композиции",
+
+    about_h1_a:"О", about_h1_b:"нас", about_card:"Любовь к деталям",
+    about_why:"Почему выбирают нас",
+    about_p1:"Работаем с живыми цветами и бережной упаковкой. Собираем композиции под бюджет, повод и стиль.",
+    about_p2:"Быстрые согласования в мессенджерах и чёткие сроки доставки.",
+    benefit_range_t:"От классики до экзотики", benefit_range_d:"Букеты/композиции под любой повод",
+    benefit_bride_t:"Букет невесты", benefit_bride_d:"Свадебная флористика и декор",
+    benefit_delivery_t:"Заказ и доставка", benefit_delivery_d:"Хойники и ближайшие районы",
+    about_cta:"В каталог",
+
+    feat_delivery:"Доставка", feat_city:"По городу", feat_exchange:"Обмен", feat_as_agreed:"По договорённости",
+    feat_cards:"Открытки", feat_ribbons:"и ленточки", feat_safe:"Надёжно", feat_careful:"и аккуратно",
+
+    catalog_h1:"Наши букеты",
+    chip_all:"Все", chip_roses:"Розы", chip_tulips:"Тюльпаны", chip_peonies:"Пионы", chip_wedding:"Свадьба", chip_exotic:"Экзотика",
+    filters_search_placeholder:"Поиск по названию…",
+    filters_all_categories:"Все категории",
+    filters_reset:"Сброс",
+    filters_cart_button:"Корзина",
+    empty_catalog:"Каталог скоро пополнится 🌸",
+
+    delivery_h1_a:"Доставка", delivery_h1_b:"в Хойниках",
+    delivery_title:"Заказ и доставка букетов — Хойники",
+    delivery_point1:"Букеты/композиции: от классики до экзотики",
+    delivery_point2:"Букет невесты, свадебный декор",
+    delivery_point3:"Самовывоз или курьером по городу",
+    delivery_btn1:"Сделать заказ", delivery_btn2:"Смотреть каталог",
+    delivery_contacts:"Контакты",
+    delivery_address_t:"Адрес:", delivery_address_v:"улица Жукова 2Л, Хойники 247618",
+    delivery_phone_t:"Телефон:", delivery_hours_t:"Время:", delivery_hours_v:"ежедневно 8:30–18:30",
+    delivery_note:"Позвоните нам — подскажем по составу, бюджету и срокам доставки.",
+
+    reviews_h1:"Отзывы клиентов", rev_1:"Красиво, вовремя, и запах — восторг!", rev_2:"Собрали букет под бюджет и пожелания.", rev_buyer:"Покупатель",
+
+    faq_h1_a:"Ответы", faq_h1_b:"на вопросы",
+    faq_q1:"Как оформить заказ?", faq_a1:"Выберите букет в каталоге, добавьте в корзину и оставьте заявку. Мы свяжемся, уточним детали и согласуем доставку.",
+    faq_q2:"Вы делаете индивидуальные композиции?", faq_a2:"Да. Под бюджет, цветовую гамму и повод. Подберём свежие сезонные цветы и упаковку.",
+    faq_q3:"Как работает доставка по городу?", faq_a3:"Доставляем по Хойникам в день заказа (при наличии цветов). Также есть самовывоз по адресу: ул. Жукова, 2Л.",
+
+    contact_h1_a:"Свяжитесь", contact_h1_b:"с нами",
+    contact_name:"Имя", contact_email:"Email", contact_phone:"Телефон", contact_msg:"Сообщение", contact_submit:"Отправить",
+
+    f_quick:"Быстрые ссылки", f_home:"Главная", f_about:"О нас", f_catalog:"Каталог", f_reviews:"Отзывы", f_contacts:"Контакты",
+    f_services:"Услуги", f_s1:"Заказ и доставка букетов — Хойники", f_s2:"Букеты/композиции: от классики до экзотики", f_s3:"Букет невесты", f_s4:"Свадебный декор",
+    f_address_t:"Адрес", f_address_v1:"улица Жукова, 2Л", f_address_v2:"г. Хойники, 247618", f_address_v3:"Беларусь",
+    f_contact_t:"Контакты", f_feedback:"Форма обратной связи",
+
+    rights:"Все права защищены.",
+    cart_title:"Корзина", cart_total_label:"Итого:", cart_checkout:"Оформить заказ",
+    order_title:"Оформление заказа",
+    order_name_label:"Имя*", order_phone_label:"Телефон*",
+    order_dt_label:"Доставка или самовывоз*", order_dt_delivery:"Доставка", order_dt_pickup:"Самовывоз",
+    order_address_label:"Адрес (если доставка)", order_when_label:"Желаемые дата и время",
+    order_comment_label:"Комментарии", order_hint:"После подтверждения заказа вы получите реквизиты для оплаты или оплатите при получении.",
+    order_submit:"Отправить заявку", order_success:"Спасибо! Заявка отправлена.",
+    order_error_empty:"Корзина пуста.", order_error_send:"Не удалось отправить. Попробуйте ещё раз или свяжитесь по телефону.",
+
+    add_to_cart:"В корзину", wishlist_title:"В избранное", share_title:"Поделиться"
+  },
+  be: {
+    topbar_msg:"Букеты з дастаўкай па горадзе Хойнікі — хуткі заказ на сайце 🌸",
+    nav_about:"Пра нас", nav_catalog:"Каталог", nav_reviews:"Водгукі", nav_contacts:"Кантакты", nav_delivery:"Дастаўка", nav_faq:"FAQ",
+
+    hero_tag_city:"Хойнікі • Дастаўка", hero_tag_fresh:"Свеже штодня",
+    hero_eyebrow:"Аўтарскія кампазіцыі і дэкор",
+    hero_h1:"Свежыя кветкі кожны дзень",
+    hero_p:"Абярыце букет і аформіце заказ за 1–2 хвіліны. Даставім па горадзе або падрыхтуем да самавывазу.",
+    hero_cta:"Паглядзець каталог", hero_cta2:"Напісаць нам",
+
+    usp_fast:"Дастаўка ў дзень заказу", usp_fresh:"Толькі свежыя кветкі", usp_custom:"Індывідуальныя кампазіцыі",
+
+    about_h1_a:"Пра", about_h1_b:"нас", about_card:"Любоў да дэталяў",
+    about_why:"Чаму абіраюць нас",
+    about_p1:"Працуюем з жывымі кветкамі і далікатнай упакоўкай. Збіраем кампазіцыі пад бюджэт, нагоду і стыль.",
+    about_p2:"Хуткія ўзгадненні ў мэсэджарах і дакладныя тэрміны дастаўкі.",
+    benefit_range_t:"Ад класікі да экзотыкі", benefit_range_d:"Букеты/кампазіцыі на любы выпадак",
+    benefit_bride_t:"Букет нявесты", benefit_bride_d:"Вясельная флорыстыка і дэкор",
+    benefit_delivery_t:"Заказ і дастаўка", benefit_delivery_d:"Хойнікі і суседнія раёны",
+    about_cta:"У каталог",
+
+    feat_delivery:"Дастаўка", feat_city:"Па горадзе", feat_exchange:"Абмен", feat_as_agreed:"Па дамоўленасці",
+    feat_cards:"Карцiчкі", feat_ribbons:"і стужкі", feat_safe:"Надзейна", feat_careful:"і акуратна",
+
+    catalog_h1:"Нашы букеты",
+    chip_all:"Усе", chip_roses:"Розы", chip_tulips:"Цюльпаны", chip_peonies:"Півоні", chip_wedding:"Вяселле", chip_exotic:"Экзотыка",
+    filters_search_placeholder:"Пошук па назве…",
+    filters_all_categories:"Усе катэгорыі",
+    filters_reset:"Скід",
+    filters_cart_button:"Кошык",
+    empty_catalog:"Каталог хутка папоўніцца 🌸",
+
+    delivery_h1_a:"Дастаўка", delivery_h1_b:"у Хойніках",
+    delivery_title:"Заказ і дастаўка букетаў — Хойнікі",
+    delivery_point1:"Букеты/кампазіцыі: ад класікі да экзотыкі",
+    delivery_point2:"Букет нявесты, вясельны дэкор",
+    delivery_point3:"Самавываз або кур’ерам па горадзе",
+    delivery_btn1:"Зрабіць заказ", delivery_btn2:"Глядзець каталог",
+    delivery_contacts:"Кантакты",
+    delivery_address_t:"Адрас:", delivery_address_v:"вуліца Жукава 2Л, Хойнікі 247618",
+    delivery_phone_t:"Тэлефон:", delivery_hours_t:"Час:", delivery_hours_v:"штодня 8:30–18:30",
+    delivery_note:"Патэлефануйце — параім па складзе, бюджэце і тэрмінах дастаўкі.",
+
+    reviews_h1:"Водгукі кліентаў", rev_1:"Прыгожа, своечасова і пах — захапленне!", rev_2:"Збілі букет пад бюджэт і пажаданні.", rev_buyer:"Пакупнік",
+
+    faq_h1_a:"Адказы", faq_h1_b:"на пытанні",
+    faq_q1:"Як аформіць заказ?", faq_a1:"Абярыце букет у каталогу, дадайце ў кошык і пакіньце заяўку. Мы звяжамся і ўзгоднім дастаўку.",
+    faq_q2:"Рабіце індывідуальныя кампазіцыі?", faq_a2:"Так. Пад бюджэт, колеры і нагоду. Падбяром свежыя сезонныя кветкі.",
+    faq_q3:"Як працуе дастаўка па горадзе?", faq_a3:"Дастаўляем па Хойніках у дзень заказу (калі ёсць кветкі). Ёсць самавываз: вул. Жукава, 2Л.",
+
+    contact_h1_a:"Звяжыцеся", contact_h1_b:"з намі",
+    contact_name:"Імя", contact_email:"Email", contact_phone:"Тэлефон", contact_msg:"Паведамленне", contact_submit:"Адправіць",
+
+    f_quick:"Хуткія спасылкі", f_home:"Галоўная", f_about:"Пра нас", f_catalog:"Каталог", f_reviews:"Водгукі", f_contacts:"Кантакты",
+    f_services:"Паслугі", f_s1:"Заказ і дастаўка букетаў — Хойнікі", f_s2:"Букеты/кампазіцыі: ад класікі да экзотыкі", f_s3:"Букет нявесты", f_s4:"Вясельны дэкор",
+    f_address_t:"Адрас", f_address_v1:"вуліца Жукава, 2Л", f_address_v2:"г. Хойнікі, 247618", f_address_v3:"Беларусь",
+    f_contact_t:"Кантакты", f_feedback:"Форма зваротнай сувязі",
+
+    rights:"Усе правы абаронены.",
+    cart_title:"Кошык", cart_total_label:"Разам:", cart_checkout:"Аформіць заказ",
+    order_title:"Афармленне заказу",
+    order_name_label:"Імя*", order_phone_label:"Тэлефон*",
+    order_dt_label:"Дастаўка або самавываз*", order_dt_delivery:"Дастаўка", order_dt_pickup:"Самавываз",
+    order_address_label:"Адрас (калі дастаўка)", order_when_label:"Жаданыя дата і час",
+    order_comment_label:"Каментары", order_hint:"Пасля пацвярджэння вы атрымаеце рэквізіты для аплаты або аплаціце пры атрыманні.",
+    order_submit:"Адправіць заяўку", order_success:"Дзякуй! Заяўка адпраўлена.",
+    order_error_empty:"Кошык пусты.", order_error_send:"Не ўдалося адправіць. Паспрабуйце яшчэ раз або патэлефануйце.",
+
+    add_to_cart:"У кошык", wishlist_title:"У абраныя", share_title:"Падзяліцца"
+  }
+};
+const t = (key) => (I18N[state.lang] && I18N[state.lang][key]) || I18N.ru[key] || key;
+
+function applyI18n(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{ el.setAttribute("placeholder", t(el.dataset.i18nPlaceholder)); });
+  const cartLabel = document.querySelector("#cartOffcanvasLabel");
+  if (cartLabel) cartLabel.textContent = t("cart_title");
+  const cartCheckout = document.querySelector("#openOrderModal");
+  if (cartCheckout) cartCheckout.textContent = t("cart_checkout");
+}
+
+/* ===== Theme ===== */
+function getPreferredTheme(){
+  const saved = localStorage.getItem("pt_theme");
+  if (saved) return saved;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function setTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("pt_theme", theme);
+  updateThemeIcons(theme);
+}
+function toggleTheme(){
+  const next = (document.documentElement.getAttribute("data-theme") === "dark") ? "light" : "dark";
+  setTheme(next);
+}
+function updateThemeIcons(theme){
+  document.querySelectorAll("#themeToggle i, #themeToggleFooter i").forEach(icon=>{
+    icon.className = "fa-solid " + (theme === "dark" ? "fa-sun" : "fa-moon");
+  });
+}
+
+/* ===== State ===== */
+const BYN = (n) => `${(Number(n) || 0).toFixed(2)} BYN`;
+const el = (sel) => document.querySelector(sel);
+const els = (sel) => document.querySelectorAll(sel);
+
+const state = {
+  lang: localStorage.getItem("pt_lang") || document.documentElement.lang || "ru",
+  products: [],
+  filtered: [],
+  cart: loadCart()
+};
+
+function setLang(lang){
+  state.lang = (lang === "be" ? "be" : "ru");
+  localStorage.setItem("pt_lang", state.lang);
+  document.documentElement.lang = state.lang;
+  ["#langSelect","#langSelectFooter"].forEach(id=>{
+    const s = el(id); if (s) s.value = state.lang;
+  });
+  applyI18n();
+  renderProducts();
+}
+
+/* ===== Cart ===== */
+function loadCart(){ try { return JSON.parse(localStorage.getItem("pt_cart") || '{"items":[]}'); } catch { return { items: [] }; } }
+function saveCart(){ localStorage.setItem("pt_cart", JSON.stringify(state.cart)); updateCartUI(); }
+function addToCart(prod){
+  if (!prod) return;
+  const idx = state.cart.items.findIndex(i => i.sku === prod.sku);
+  if (idx >= 0) state.cart.items[idx].qty += 1;
+  else state.cart.items.push({ sku: prod.sku, title: prod.title, price: prod.price, image: prod.image, qty: 1 });
+  saveCart();
+  bootstrap.Offcanvas.getOrCreateInstance("#cartOffcanvas").show();
+}
+function removeFromCart(sku){ state.cart.items = state.cart.items.filter(i => i.sku !== sku); saveCart(); }
+function changeQty(sku, delta){
+  const it = state.cart.items.find(i => i.sku === sku);
+  if (!it) return; it.qty = Math.max(1, it.qty + delta); saveCart();
+}
+function cartTotal(){ return state.cart.items.reduce((s, i) => s + i.price * i.qty, 0); }
+function updateCartUI(){
+  const list = el("#cartList");
+  list.innerHTML = "";
+
+  if (!state.cart.items.length) {
+    list.innerHTML = `<li class="list-group-item text-center text-muted">${t("order_error_empty")}</li>`;
+    el("#openOrderModal").disabled = true;
+  } else el("#openOrderModal").disabled = false;
+
+  state.cart.items.forEach(i => {
+    const li = document.createElement("li");
+    li.className = "list-group-item d-flex align-items-center";
+    li.innerHTML = `
+      <img src="${i.image || './assets/productsimg5.webp'}" class="me-3" style="width:56px;height:56px;object-fit:cover;border-radius:6px" alt="">
+      <div class="flex-grow-1">
+        <div class="fw-semibold">${i.title}</div>
+        <div class="text-muted small">${BYN(i.price)} × ${i.qty}</div>
+      </div>
+      <div class="btn-group btn-group-sm ms-2" role="group">
+        <button class="btn btn-outline-secondary" data-act="dec" data-sku="${i.sku}">−</button>
+        <button class="btn btn-outline-secondary" disabled>${i.qty}</button>
+        <button class="btn btn-outline-secondary" data-act="inc" data-sku="${i.sku}">+</button>
+      </div>
+      <button class="btn btn-link text-danger ms-2" data-act="del" data-sku="${i.sku}" title="Удалить">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    `;
+    list.appendChild(li);
+  });
+
+  el("#cartTotal").textContent = BYN(cartTotal());
+  const count = state.cart.items.reduce((s,i)=>s+i.qty,0);
+  el("#cartCount").textContent = count;
+  el("#cartCountInline").textContent = count;
+
+  list.querySelectorAll("[data-act]").forEach(b=>{
+    b.onclick = () => {
+      const sku = b.getAttribute("data-sku");
+      const act = b.getAttribute("data-act");
+      if (act === "inc") changeQty(sku, +1);
+      if (act === "dec") changeQty(sku, -1);
+      if (act === "del") removeFromCart(sku);
+    };
+  });
+
+  el("#cart_json") && (el("#cart_json").value = JSON.stringify(state.cart));
+}
+
+/* ===== Fetch products from Sheets ===== */
+async function fetchText(url){
+  if (!url || url === "PASTE_SHEET_URL_HERE") return null;
+  const res = await fetch(url);
+  return await res.text();
+}
+function parseCSV(text){
+  const rows = text.trim().split(/\r?\n/).map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"|"$/g,'')));
+  const headers = rows.shift().map(h => h.trim());
+  return rows.map(r => Object.fromEntries(r.map((v,i)=>[headers[i], v])));
+}
+function parseGViz(text){
+  const json = JSON.parse(text.replace(/^[^{]+\(/,'').replace(/\);?$/,''));
+  const cols = json.table.cols.map(c => c.label || c.id);
+  return json.table.rows.map(r => {
+    const obj = {};
+    r.c.forEach((cell,i)=>{ obj[cols[i]] = cell ? (cell.f ?? cell.v) : ""; });
+    return obj;
+  });
+}
+function normalizeProducts(rows){
+  const M = CONFIG.COLUMN_MAP;
+  return rows.map(r => ({
+    sku:String(r[M.sku] ?? "").trim(),
+    title:String(r[M.title] ?? "").trim(),
+    price:Number(String(r[M.price]).replace(',', '.')),
+    old_price:Number(String(r[M.old_price]).replace(',', '.')) || null,
+    image:String(r[M.image] ?? "").trim(),
+    category:String(r[M.category] ?? "").trim(),
+    active:String(r[M.active] ?? "true").toLowerCase() !== "false",
+    discount:String(r[M.discount] ?? "").trim()
+  })).filter(p => p.title && p.active);
+}
+async function loadProducts(){
+  let text = null, rows = null;
+  try{
+    text = await fetchText(CONFIG.SHEET_URL);
+    if (text) {
+      if (text.startsWith("/*O_o*/")) rows = parseGViz(text);
+      else if (text.trim().startsWith("[")) rows = JSON.parse(text);
+      else rows = parseCSV(text);
+    }
+  }catch(e){ console.warn("Не удалось прочитать таблицу, использую демо-товары.", e); }
+  if (!rows) rows = [
+    { sku:"B001", title:"Букет роз Нежность", price:"49", old_price:"59", image:"./assets/productsimg1.webp", category:"Розы", active:"true", discount:"-17%" },
+    { sku:"B002", title:"Букет тюльпан",  price:"35", old_price:"",   image:"./assets/productsimg2.webp", category:"Тюльпаны", active:"true", discount:"" },
+    { sku:"B003", title:"Букет пионей",       price:"55", old_price:"65", image:"./assets/productsimg3.webp", category:"Пионы", active:"true", discount:"-15%" }
+  ];
+  state.products = normalizeProducts(rows);
+  state.filtered = [...state.products];
+
+  // Заполняем категории в селекте
+  const cats = Array.from(new Set(state.products.map(p => p.category).filter(Boolean))).sort();
+  const catSel = el("#categorySelect"); catSel.innerHTML = `<option value="">${t("filters_all_categories")}</option>`;
+  cats.forEach(c => {
+    const o = document.createElement("option"); o.value = c; o.textContent = c; catSel.appendChild(o);
+  });
+
+  renderProducts();
+}
+
+/* ===== Render products ===== */
+function renderProducts(){
+  const grid = el("#products-grid"); grid.innerHTML = "";
+  const list = state.filtered;
+  if (!list.length){ el("#emptyCatalog").classList.remove("d-none"); return; }
+  el("#emptyCatalog").classList.add("d-none");
+
+  list.forEach(p => {
+    const col = document.createElement("div");
+    col.className = "col-sm-6 col-lg-4 mb-4";
+    col.innerHTML = `
+      <div class="innerproductsection h-100 d-flex flex-column">
+        ${p.discount ? `<span class="discount">${p.discount}</span>` : ""}
+        <img src="${p.image || './assets/productsimg5.webp'}" alt="${p.title}">
+        <div class="cartcontainer">
+          <button class="wishlist" title="${t("wishlist_title")}"><i class="fa-solid fa-heart"></i></button>
+          <button class="btn add-to-cart" data-sku="${p.sku}">${t("add_to_cart")} <i class="fa-solid fa-cart-plus"></i></button>
+          <button class="share" title="${t("share_title")}"><i class="fa-solid fa-share"></i></button>
+        </div>
+        <h2>${p.title}</h2>
+        <h1 class="price">
+          <span class="clrchange">${BYN(p.price)}</span>
+          ${p.old_price ? `<del>${BYN(p.old_price)}</del>` : ""}
+        </h1>
+      </div>
+    `;
+    grid.appendChild(col);
+  });
+
+  grid.querySelectorAll(".add-to-cart").forEach(btn=>{
+    btn.addEventListener("click", e=>{
+      const sku = e.currentTarget.dataset.sku;
+      const prod = state.products.find(x => x.sku === sku);
+      addToCart(prod);
+    });
+  });
+}
+
+/* ===== Filters ===== */
+function applyFilters(){
+  const q = el("#searchInput").value.trim().toLowerCase();
+  const cat = el("#categorySelect").value;
+  state.filtered = state.products.filter(p => {
+    const okQ = !q || p.title.toLowerCase().includes(q);
+    const okC = !cat || p.category === cat || (cat && p.category.toLowerCase().includes(cat.toLowerCase()));
+    return okQ && okC;
+  });
+  renderProducts();
+}
+function resetFilters(){
+  el("#searchInput").value = "";
+  el("#categorySelect").value = "";
+  state.filtered = [...state.products];
+  renderProducts();
+}
+function setCategory(catVal){
+  const sel = el("#categorySelect");
+  sel.value = catVal;
+  applyFilters();
+}
+
+/* ===== Order / Contact ===== */
+async function submitOrder(e){
+  e.preventDefault();
+  el("#orderError").classList.add("d-none");
+  el("#orderSuccess").classList.add("d-none");
+
+  const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+  const payload = {
+    order: {
+      name: data.name || "",
+      phone: data.phone || "",
+      delivery_type: data.delivery_type || "delivery",
+      address: data.address || "",
+      date_time: data.date_time || "",
+      comment: data.comment || "",
+      total_byn: cartTotal()
+    },
+    items: state.cart.items
+  };
+
+  if (!payload.items.length){
+    const err = el("#orderError");
+    err.textContent = t("order_error_empty");
+    err.classList.remove("d-none");
+    return;
+  }
+
+  try{
+    el("#submitOrderBtn").disabled = true;
+    const res = await fetch(CONFIG.GS_WEB_APP_URL, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("network");
+
+    el("#orderSuccess").textContent = t("order_success");
+    el("#orderSuccess").classList.remove("d-none");
+    state.cart.items = []; saveCart(); e.currentTarget.reset();
+  }catch(_){
+    const err = el("#orderError");
+    err.textContent = t("order_error_send");
+    err.classList.remove("d-none");
+  }finally{
+    el("#submitOrderBtn").disabled = false;
+  }
+}
+function submitContact(e){
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+  alert((state.lang === "be" ? "Дзякуй! Мы звяжамся: " : "Спасибо! Мы свяжемся: ") + (data.phone || data.email || ""));
+  e.currentTarget.reset();
+}
+
+/* ===== Init ===== */
+$(document).ready(function () {
+  $(".owl-carousel").owlCarousel({
+    autoplay:true, margin:30, loop:true, dots:true, nav:true,
+    navText:["<i class='fas fa-long-arrow-alt-left'></i>","<i class='fas fa-long-arrow-alt-right'></i>"],
+    responsive:{0:{items:1},600:{items:2},1000:{items:3}}
+  });
+});
+
+window.addEventListener("DOMContentLoaded", async () => {
+  // Year
+  el("#year").textContent = new Date().getFullYear();
+
+  // Theme
+  setTheme(getPreferredTheme());
+  els("#themeToggle, #themeToggleFooter").forEach(b => b.addEventListener("click", toggleTheme));
+
+  // Language
+  setLang(state.lang);
+  ["#langSelect","#langSelectFooter"].forEach(id=>{
+    const s = el(id); if (s){ s.value = state.lang; s.addEventListener("change", e => setLang(e.target.value)); }
+  });
+  applyI18n();
+
+  // Filters
+  el("#searchInput").addEventListener("input", applyFilters);
+  el("#categorySelect").addEventListener("change", applyFilters);
+  el("#resetFilters").addEventListener("click", resetFilters);
+
+  // Chips -> category filter
+  document.addEventListener("click", (e)=>{
+    const chip = e.target.closest(".chip-cat");
+    if (!chip) return;
+    setCategory(chip.dataset.cat || "");
+  });
+
+  // Forms
+  el("#orderForm").addEventListener("submit", submitOrder);
+  el("#contactForm").addEventListener("submit", submitContact);
+
+  // Cart UI
+  updateCartUI();
+
+  // Products
+  await loadProducts();
+
+  // Localize dynamic placeholders
+  el("#searchInput").setAttribute("placeholder", t("filters_search_placeholder"));
+});
