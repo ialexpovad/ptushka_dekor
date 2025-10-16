@@ -19,6 +19,16 @@
 </head>
 
 <body id="top">
+
+  <!-- PRELOADER -->
+  <div id="flower-pre" class="flower-pre" aria-hidden="true">
+    <div class="flower-frame">
+      <i class="flower-loader" aria-hidden="true">Loading…</i>
+    </div>
+  </div>
+
+
+
   <!-- Верхняя плашка -->
   <div class="topbar">
     <marquee class="marque" direction="left" data-i18n="topbar_msg">
@@ -493,6 +503,20 @@
       </div>
     </div>
   </div>
+
+  <!-- Toast: глобальные уведомления -->
+  <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:2000">
+    <div id="globalToast" class="toast align-items-center border-0 shadow" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i id="globalToastIcon" class="fa-solid" aria-hidden="true"></i>
+          <span id="globalToastBody"></span>
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Скрипты -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

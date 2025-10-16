@@ -4,12 +4,12 @@
    ========================================= */
 
 const CONFIG = {
-  SHEET_URL: "PASTE_SHEET_URL_HERE", // CSV / GVIZ / JSON
+  SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdu-ukIcKN3DCYuKUXId6sTh62ieH4p7CzXN3FEPBtzo_55K8CQu00A6mhVgqt9Qn08tG7k464T3BW/pub?gid=0&single=true&output=csv", // CSV / GVIZ / JSON
   COLUMN_MAP: {
     sku: "sku", title: "title", price: "price", old_price: "old_price",
     image: "image", category: "category", active: "active", discount: "discount"
   },
-  GS_WEB_APP_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL"
+  GS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzpboxaHaZSyp4nQfuDhC6TZrOpkq5m7aPlJe2E0GRdin_zFvGfj6GQQXFSw9jQl_-VaA/exec"
 };
 
 /* ===== i18n ===== */
@@ -210,6 +210,29 @@ function setLang(lang){
   renderProducts();
 }
 
+/* ===== Flower Preloader control ===== */
+const Preloader = (() => {
+  const root = document.getElementById("flower-pre");
+  let hideTimer = 0;
+
+  function start(){
+    if (!root) return;
+    root.classList.remove("flower-pre--out");
+    clearTimeout(hideTimer);
+  }
+  function done(){
+    if (!root) return;
+    root.classList.add("flower-pre--out");
+    hideTimer = setTimeout(() => root.remove(), 650);
+  }
+
+  // Fail-safe: чтобы не зависал
+  setTimeout(() => { if (document.getElementById("flower-pre")) done(); }, 12000);
+
+  return { start, done };
+})();
+
+
 /* ===== Cart ===== */
 function loadCart(){ try { return JSON.parse(localStorage.getItem("pt_cart") || '{"items":[]}'); } catch { return { items: [] }; } }
 function saveCart(){ localStorage.setItem("pt_cart", JSON.stringify(state.cart)); updateCartUI(); }
@@ -219,7 +242,8 @@ function addToCart(prod){
   if (idx >= 0) state.cart.items[idx].qty += 1;
   else state.cart.items.push({ sku: prod.sku, title: prod.title, price: prod.price, image: prod.image, qty: 1 });
   saveCart();
-  bootstrap.Offcanvas.getOrCreateInstance("#cartOffcanvas").show();
+  bootstrap.Offcanvas.getOrCreateInstance(el("#cartOffcanvas")).show();
+
 }
 function removeFromCart(sku){ state.cart.items = state.cart.items.filter(i => i.sku !== sku); saveCart(); }
 function changeQty(sku, delta){
@@ -295,19 +319,138 @@ function parseGViz(text){
     return obj;
   });
 }
+
+// Достаём fileId из любой drive-ссылки
+function extractDriveId(url) {
+  if (!url) return "";
+  // уже uc?export=... с id=...
+  const m0 = String(url).match(/[?&]id=([-\w]{25,})/);
+  if (m0) return m0[1];
+
+  try {
+    const u = new URL(url);
+    // формат /file/d/<ID>/view
+    const m1 = u.pathname.match(/\/d\/([-\w]{25,})/);
+    if (m1) return m1[1];
+  } catch (_) {}
+
+  // фолбэк: берём похожий на ID фрагмент
+  const m2 = String(url).match(/[-\w]{25,}/);
+  return m2 ? m2[0] : "";
+}
+
+// Собираем 2 вида ссылок: primary (thumbnail) и fallback (uc=view)
+function buildDriveImageURLs(fileId, size = 1200) {
+  if (!fileId) return { primary: "", fallback: "" };
+  return {
+    // Возвращает image/jpeg → не вызывает CORB
+    primary: `https://drive.google.com/thumbnail?id=${fileId}&sz=w${size}`,
+    // Фолбэк на случай недоступности thumbnail
+    fallback: `https://drive.google.com/uc?export=view&id=${fileId}`
+  };
+}
+
+/* ===== Overlay helpers (Modal/Offcanvas) ===== */
+function closeOverlays(){
+  const orderModalEl    = el("#orderModal");
+  const cartOffcanvasEl = el("#cartOffcanvas");
+
+  try { if (orderModalEl)    bootstrap.Modal.getOrCreateInstance(orderModalEl).hide(); } catch(_) {}
+  try { if (cartOffcanvasEl) bootstrap.Offcanvas.getOrCreateInstance(cartOffcanvasEl).hide(); } catch(_) {}
+}
+
+/* ===== Toast helper (с иконками) ===== */
+/* ===== Toast: гарантированно создаём и показываем ===== */
+function ensureToastDOM(){
+  if (document.getElementById("globalToast")) return;
+
+  const wrap = document.createElement("div");
+  wrap.className = "position-fixed top-0 start-50 translate-middle-x p-3";
+  wrap.style.zIndex = "2000";
+  wrap.innerHTML = `
+    <div id="globalToast" class="toast align-items-center border-0 shadow" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i id="globalToastIcon" class="fa-solid" aria-hidden="true"></i>
+          <span id="globalToastBody"></span>
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(wrap);
+}
+
+function showToast(message, type = "success"){
+  ensureToastDOM();
+
+  const toastEl = document.getElementById("globalToast");
+  const bodyEl  = document.getElementById("globalToastBody");
+  const iconEl  = document.getElementById("globalToastIcon");
+
+  if (!toastEl || !bodyEl) {
+    // жёсткий фолбэк, если что-то пошло совсем не так
+    alert(message);
+    return;
+  }
+
+  const ok = (type === "success");
+  toastEl.classList.remove("text-bg-success","text-bg-danger");
+  toastEl.classList.add(ok ? "text-bg-success" : "text-bg-danger");
+
+  if (iconEl){
+    iconEl.className = "fa-solid " + (ok ? "fa-circle-check" : "fa-triangle-exclamation");
+  }
+  bodyEl.textContent = message;
+
+  try {
+    const inst = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 4000, autohide: true });
+    // если только что показывали — перезапустим анимацию
+    toastEl.classList.remove("show");
+    // небольшой таймаут даёт Bootstrap корректно пересчитать состояние
+    setTimeout(() => inst.show(), 20);
+  } catch {
+    // на случай отсутствия Bootstrap
+    alert(message);
+  }
+}
+
+
+/* ===== Redirect helper ===== */
+function redirectHome(status){
+  const url = new URL(window.location.href);
+  url.searchParams.set("status", status); // ok | fail
+  url.hash = "#top";
+  // небольшая пауза даёт Bootstrap анимациям закрытия завершиться
+  window.setTimeout(() => { window.location.assign(url.toString()); }, 160);
+}
+
+// Принимаем share-ссылку и возвращаем {primary, fallback}
+function normalizeDriveURL(url, size = 1200) {
+  const id = extractDriveId(url);
+  return id ? buildDriveImageURLs(id, size) : { primary: url || "", fallback: "" };
+}
+
 function normalizeProducts(rows){
   const M = CONFIG.COLUMN_MAP;
-  return rows.map(r => ({
-    sku:String(r[M.sku] ?? "").trim(),
-    title:String(r[M.title] ?? "").trim(),
-    price:Number(String(r[M.price]).replace(',', '.')),
-    old_price:Number(String(r[M.old_price]).replace(',', '.')) || null,
-    image:String(r[M.image] ?? "").trim(),
-    category:String(r[M.category] ?? "").trim(),
-    active:String(r[M.active] ?? "true").toLowerCase() !== "false",
-    discount:String(r[M.discount] ?? "").trim()
-  })).filter(p => p.title && p.active);
+  return rows.map(r => {
+    const rawImg = String(r[M.image] ?? "").trim();
+    const img = normalizeDriveURL(rawImg, 1400); // можно варьировать ширину
+    return {
+      sku: String(r[M.sku] ?? "").trim(),
+      title: String(r[M.title] ?? "").trim(),
+      price: Number(String(r[M.price]).replace(',', '.')),
+      old_price: Number(String(r[M.old_price]).replace(',', '.')) || null,
+      image: img.primary,                // thumbnail-ссылка (image/jpeg)
+      image_fallback: img.fallback,      // uc?export=view
+      category: String(r[M.category] ?? "").trim(),
+      active: String(r[M.active] ?? "true").toLowerCase() !== "false",
+      discount: String(r[M.discount] ?? "").trim()
+    };
+  }).filter(p => p.title && p.active);
 }
+
+
 async function loadProducts(){
   let text = null, rows = null;
   try{
@@ -349,7 +492,10 @@ function renderProducts(){
     col.innerHTML = `
       <div class="innerproductsection h-100 d-flex flex-column">
         ${p.discount ? `<span class="discount">${p.discount}</span>` : ""}
-        <img src="${p.image || './assets/productsimg5.webp'}" alt="${p.title}">
+        <img src="${p.image || './assets/productsimg5.webp'}"
+             alt="${p.title}"
+             loading="lazy"
+             referrerpolicy="no-referrer">
         <div class="cartcontainer">
           <button class="wishlist" title="${t("wishlist_title")}"><i class="fa-solid fa-heart"></i></button>
           <button class="btn add-to-cart" data-sku="${p.sku}">${t("add_to_cart")} <i class="fa-solid fa-cart-plus"></i></button>
@@ -363,6 +509,16 @@ function renderProducts(){
       </div>
     `;
     grid.appendChild(col);
+
+    // Фолбэк на uc?export=view при 403/404/CORB и т.п.
+    const imgEl = col.querySelector("img");
+    imgEl.addEventListener("error", () => {
+      if (imgEl.dataset.fallbackTried) return;
+      imgEl.dataset.fallbackTried = "1";
+      if (p.image_fallback && imgEl.src !== p.image_fallback) {
+        imgEl.src = p.image_fallback;
+      }
+    });
   });
 
   grid.querySelectorAll(".add-to-cart").forEach(btn=>{
@@ -373,6 +529,7 @@ function renderProducts(){
     });
   });
 }
+
 
 /* ===== Filters ===== */
 function applyFilters(){
@@ -398,14 +555,59 @@ function setCategory(catVal){
 }
 
 /* ===== Order / Contact ===== */
+
+// Надёжная отправка заказа: сначала CORS (нормально читаем ответ),
+// если браузер блокирует — no-cors (opaque, но запрос уходит),
+// в крайнем случае sendBeacon (fire-and-forget).
+async function postOrder(payload){
+  const url = CONFIG.GS_WEB_APP_URL;
+
+  // 1) Проверяем, что URL действительно Apps Script /exec
+  const okURL = typeof url === "string" && /^https:\/\/script\.google\.com\/macros\/s\/[-\w]+\/exec(\?.*)?$/.test(url);
+  if (!okURL) return { status: "fail", reason: "invalid_url" };
+
+  // 2) Отправляем ТОЛЬКО с CORS и ждём нормальный ответ
+  const res = await fetch(url, {
+    method: "POST",
+    // сохраняем совместимость с вашим беком (как было у вас)
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
+    mode: "cors",
+    cache: "no-store",
+    keepalive: true
+  });
+
+  if (!res.ok) return { status: "fail", code: res.status };
+
+  // 3) Подтверждаем по JSON: { ok: true } или { status: "ok" }
+  let data = null;
+  try { data = await res.json(); } catch(_) {}
+
+  if (data && (data.ok === true || data.status === "ok")) {
+    return { status: "ok", server: data };
+  }
+
+  // Никакого подтверждения от сервера — считаем неуспехом
+  return { status: "fail", reason: "bad_response", server: data };
+}
+
+
 async function submitOrder(e){
   e.preventDefault();
-  el("#orderError").classList.add("d-none");
-  el("#orderSuccess").classList.add("d-none");
 
-  const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+  // Сохраняем стабильные ссылки ДО await/закрытия модалок
+  const form     = e.currentTarget || el("#orderForm");
+  const errEl    = el("#orderError");
+  const submitBtn= el("#submitOrderBtn");
+
+  if (errEl) errEl.classList.add("d-none");
+
+  const data = Object.fromEntries(new FormData(form).entries());
+  const orderId = "ORD-" + Date.now() + "-" + Math.floor(Math.random()*1e6);
+
   const payload = {
     order: {
+      id: orderId,
       name: data.name || "",
       phone: data.phone || "",
       delivery_type: data.delivery_type || "delivery",
@@ -418,30 +620,49 @@ async function submitOrder(e){
   };
 
   if (!payload.items.length){
-    const err = el("#orderError");
-    err.textContent = t("order_error_empty");
-    err.classList.remove("d-none");
+    if (errEl) {
+      errEl.textContent = t("order_error_empty");
+      errEl.classList.remove("d-none");
+    }
     return;
   }
 
-  try{
-    el("#submitOrderBtn").disabled = true;
-    const res = await fetch(CONFIG.GS_WEB_APP_URL, {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error("network");
+  // Кнопка: спиннер/блокировка — по возможности
+  const prevHTML = submitBtn ? submitBtn.innerHTML : "";
+  if (submitBtn){
+    submitBtn.disabled = true;
+    submitBtn.setAttribute("aria-busy","true");
+    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${t("order_submit")}`;
+  }
 
-    el("#orderSuccess").textContent = t("order_success");
-    el("#orderSuccess").classList.remove("d-none");
-    state.cart.items = []; saveCart(); e.currentTarget.reset();
-  }catch(_){
-    const err = el("#orderError");
-    err.textContent = t("order_error_send");
-    err.classList.remove("d-none");
-  }finally{
-    el("#submitOrderBtn").disabled = false;
+  try{
+    const result = await postOrder(payload);
+
+    if (result.status === "ok"){
+      // Только подтверждённый успех закрывает UI
+      closeOverlays();
+      state.cart.items = []; 
+      saveCart();
+      if (form) form.reset();
+      showToast(t("order_success") + ` (№ ${orderId})`, "success");
+    } else {
+      if (errEl){
+        errEl.textContent = t("order_error_send");
+        errEl.classList.remove("d-none");
+      }
+      showToast(t("order_error_send"), "danger");
+    }
+
+  } finally{
+    if (submitBtn){
+      submitBtn.disabled = false;
+      submitBtn.removeAttribute("aria-busy");
+      submitBtn.innerHTML = prevHTML;
+    }
   }
 }
+
+
 function submitContact(e){
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.currentTarget).entries());
@@ -489,12 +710,25 @@ window.addEventListener("DOMContentLoaded", async () => {
   el("#orderForm").addEventListener("submit", submitOrder);
   el("#contactForm").addEventListener("submit", submitContact);
 
-  // Cart UI
-  updateCartUI();
-
-  // Products
+  Preloader.start();
   await loadProducts();
+  updateCartUI();
+  Preloader.done();
 
   // Localize dynamic placeholders
   el("#searchInput").setAttribute("placeholder", t("filters_search_placeholder"));
+
+  // Показать уведомление после редиректа (и очистить URL)
+  const params = new URLSearchParams(window.location.search);
+  const st = params.get("status");
+  if (st === "ok") {
+    showToast(t("order_success"), "success");
+  } else if (st === "fail") {
+    showToast(t("order_error_send"), "danger");
+  }
+  if (st) {
+    history.replaceState({}, "", window.location.pathname + window.location.hash);
+  }
+
+
 });

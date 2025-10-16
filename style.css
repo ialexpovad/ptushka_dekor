@@ -51,6 +51,11 @@
   --z-modal:1055;
   --z-popover:1070;
   --z-tooltip:1080;
+
+  --flower-overlay:#ffffff;
+  --flower-petal:#ffb3dc;         /* лепестки */
+  --flower-glow:rgba(255,255,255,.8);
+
 }
 
 /* ---------- Dark theme ---------- */
@@ -71,8 +76,12 @@
 
   --shadow-sm:0 6px 20px rgba(0,0,0,.45);
   --shadow-md:0 24px 60px rgba(0,0,0,.55);
-}
 
+  --flower-overlay:#0b0d16;
+  --flower-petal:#ffb3dc;
+  --flower-glow:rgba(255,255,255,.25);
+  
+}
 /* ---------- Base / overflow safety ---------- */
 *,
 *::before,
@@ -607,4 +616,112 @@ header .navbar::-webkit-scrollbar-track{background:#f5f5f5}
 :root[data-theme="dark"] .benefit{
   background: var(--surface);
   box-shadow: var(--shadow-sm);
+}
+
+
+.flower-pre{
+  position:fixed; inset:0; z-index:4000; display:grid; place-items:center;
+  background:
+    radial-gradient(900px 480px at 70% -10%, rgba(255,133,194,.16), transparent 60%),
+    radial-gradient(700px 420px at -15% 120%, rgba(147,210,255,.12), transparent 60%),
+    var(--flower-overlay);
+  transition:opacity .55s ease, visibility .55s ease;
+  opacity:1; visibility:visible;
+}
+.flower-pre--out{ opacity:0; visibility:hidden; pointer-events:none; }
+
+/* Масштаб цветка (меняй при желании) */
+.flower-frame{
+  transform: scale(2.2);
+  filter: drop-shadow(0 10px 26px rgba(0,0,0,.14));
+}
+@media (max-width:480px){ .flower-frame{ transform: scale(1.8); } }
+
+/* ===== Spinner из твоего примера (адаптирован под тему) ===== */
+@-moz-keyframes flower-loader {
+  0%{
+    -moz-transform: rotate(0deg); transform: rotate(0deg);
+    -moz-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+    box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+  }
+  50%{
+    -moz-transform: rotate(1080deg); transform: rotate(1080deg);
+    -moz-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+    box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+  }
+}
+@-webkit-keyframes flower-loader {
+  0%{
+    -webkit-transform: rotate(0deg); transform: rotate(0deg);
+    -webkit-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+    box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+  }
+  50%{
+    -webkit-transform: rotate(1080deg); transform: rotate(1080deg);
+    -webkit-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+    box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+  }
+}
+@keyframes flower-loader {
+  0%{
+    -moz-transform: rotate(0deg); -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg); transform: rotate(0deg);
+    -moz-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+    -webkit-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+    box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px;
+  }
+  50%{
+    -moz-transform: rotate(1080deg); -ms-transform: rotate(1080deg);
+    -webkit-transform: rotate(1080deg); transform: rotate(1080deg);
+    -moz-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+    -webkit-box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+    box-shadow: var(--flower-glow) 0 0 15px 0,
+      var(--flower-petal) 12px 12px 0 4px,  var(--flower-petal) -12px 12px 0 4px,
+      var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px;
+  }
+}
+
+.flower-loader:not(:required){
+  overflow:hidden; position:relative; text-indent:-9999px; display:inline-block;
+  width:20px; height:20px; background: currentColor; color: #c54d9b; /* центр */
+  border-radius:50%;
+  -moz-box-shadow: var(--flower-glow) 0 0 15px 0, var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px, var(--flower-petal) 12px 12px 0 4px, var(--flower-petal) -12px 12px 0 4px;
+  -webkit-box-shadow: var(--flower-glow) 0 0 15px 0, var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px, var(--flower-petal) 12px 12px 0 4px, var(--flower-petal) -12px 12px 0 4px;
+  box-shadow: var(--flower-glow) 0 0 15px 0, var(--flower-petal) -12px -12px 0 4px, var(--flower-petal) 12px -12px 0 4px, var(--flower-petal) 12px 12px 0 4px, var(--flower-petal) -12px 12px 0 4px;
+  -moz-animation: flower-loader 5s infinite ease-in-out;
+  -webkit-animation: flower-loader 5s infinite ease-in-out;
+  animation: flower-loader 5s infinite ease-in-out;
+  -moz-transform-origin:50% 50%; -ms-transform-origin:50% 50%;
+  -webkit-transform-origin:50% 50%; transform-origin:50% 50%;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .flower-loader:not(:required){ animation:none !important; }
 }
