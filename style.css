@@ -114,11 +114,25 @@ section, header, footer{ overflow-x:clip; }
   box-shadow: 0 10px 24px rgba(0,0,0,.18);
   z-index: var(--z-sticky);
   overflow:hidden;
+  transition: transform .45s ease, opacity .45s ease, visibility .45s ease;
 }
 .topbar::after{
   content: ""; position: absolute; left:0; right:0; bottom:0; height:1px;
   background: rgba(255,255,255,.25); mix-blend-mode: soft-light;
 }
+.topbar--out{ transform: translateY(-100%); opacity:0; visibility:hidden; pointer-events:none; }
+
+.topbar-close{
+  position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  display:inline-grid; place-items:center;
+  width:28px; height:28px; border-radius:999px; border:0;
+  background: rgba(255,255,255,.22);
+  color:#fff; font-size:18px; line-height:1; cursor:pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.topbar-close:hover{ background: rgba(255,255,255,.32); transform:translateY(-50%) scale(1.05); }
+.topbar-close:active{ transform:translateY(-50%) scale(.98); }
+
 .marque{
   margin:0; padding:.35rem .5rem; display:block; width:100%; text-align:center; white-space:nowrap;
   font-family:var(--ff-heading); font-weight:700; letter-spacing:.25px; font-size:clamp(13px,3.4vw,17px); color:var(--topbar-fg);
@@ -126,19 +140,28 @@ section, header, footer{ overflow-x:clip; }
           mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
   opacity:.98;
 }
+
 body.modal-open .topbar{ pointer-events:none; }
+body.modal-open .topbar-close{ pointer-events:auto; } /* кнопку всё же можно нажать */
 
 :root[data-theme="dark"] .topbar{
   background:
     radial-gradient(1200px 120px at 50% 100%, rgba(255,255,255,.05) 0%, transparent 60%),
     linear-gradient(90deg, #0b0d12 0%, #1b0f17 35%, #9d365c 50%, #1b0f17 65%, #0b0d12 100%);
 }
+
 @media (max-width: 576px){
   :root{ --topbar-h:50px; }
   .marque{ padding:.45rem .9rem }
 }
 
+/* Убираем отступы у всего, что завязано на --topbar-h, когда плашка закрыта */
+:root.topbar-closed{ --topbar-h:0px; }
+
 /* ---------- Navbar ---------- */
+/* Плавный подъём хедера при закрытии плашки */
+header .navbar{ transition: top .45s ease; }
+
 header .navbar{
   position:fixed; top:var(--topbar-h); left:0; right:0;
   background:var(--nav-bg); color:var(--nav-text); box-shadow:var(--nav-shadow);

@@ -27,12 +27,12 @@
     </div>
   </div>
 
-
-
-  <!-- Верхняя плашка -->
-  <div class="topbar">
-    <marquee class="marque" direction="left" data-i18n="topbar_msg">
-      Букеты с доставкой по городу Хойники — быстрый заказ на сайте 🌸
+  <!-- Верхняя плашка (закрываемая + редактируемая) -->
+  <div class="topbar" id="topbar" role="region" aria-label="Актуальная информация">
+    <button class="topbar-close" id="topbarClose" aria-label="Скрыть">&times;</button>
+    <marquee id="topbarMarquee" class="marque" direction="left" data-i18n="topbar_msg" scrollamount="10" behavior="scroll">
+      Проконсультируйтесь с нами +375 (29) 387-48-24 или info@ptushkadekor.by
+      о наличии и точной стоимостью букета перед тем, как делать заказ 🌸
     </marquee>
   </div>
 
@@ -252,17 +252,17 @@
               <div class="col-12">
                 <i class="fa-solid fa-location-dot me-2"></i>
                 <strong data-i18n="delivery_address_t">Адрес:</strong>
-                <span data-i18n="delivery_address_v">улица Жукова 2, Хойники 247618</span>
+                <span id="deliveryAddress" data-i18n="delivery_address_v">улица Жукова 2, Хойники 247618</span>
               </div>
               <div class="col-12">
                 <i class="fa-solid fa-phone me-2"></i>
                 <strong data-i18n="delivery_phone_t">Телефон:</strong>
-                <a href="tel:+375293874824">+375 (29) 387-48-24</a>
+                <a id="phoneLink" href="tel:+375293874824">+375 (29) 387-48-24</a>
               </div>
               <div class="col-12">
                 <i class="fa-regular fa-clock me-2"></i>
                 <strong data-i18n="delivery_hours_t">Время:</strong>
-                <span data-i18n="delivery_hours_v">ежедневно 8:30–18:30</span>
+                <span id="deliveryHours" data-i18n="delivery_hours_v">ежедневно 8:30–18:30</span>
               </div>
               <div class="col-12">
                 <div class="socials">
@@ -401,17 +401,15 @@
 
         <div class="col-sm-3">
           <h3 class="footerheadings" data-i18n="f_address_t">Адрес</h3>
-          <ul>
-            <li data-i18n="f_address_v1">улица Жукова, 2</li>
-            <li data-i18n="f_address_v2">г. Хойники, 247618</li>
-            <li data-i18n="f_address_v3">Беларусь</li>
+          <ul id="footerAddressList">
+            <li id="footerAddress">улица Жукова 2, Хойники 247618, Беларусь</li>
           </ul>
         </div>
 
         <div class="col-sm-3">
           <h3 class="footerheadings" data-i18n="f_contact_t">Контакты</h3>
           <ul>
-            <li><a href="tel:+375293874824">+375 (29) 387-48-24</a></li>
+            <li><a id="footerPhone" href="tel:+375293874824">+375 (29) 387-48-24</a></li>
             <li><a href="#contact" data-i18n="f_feedback">Форма обратной связи</a></li>
           </ul>
             <div class="d-flex align-items-center justify-content-center gap-2 mt-2">
@@ -431,6 +429,13 @@
           </div>
         </div>
       </div>
+      <div class="row">
+      <div class="col-12 text-center">
+        <p id="legalOwner" class="small text-muted">
+          Владелец: ООО "Птушка Декор" УНП: 123456789
+        </p>
+      </div>
+    </div>
     </div>
   </footer>
 

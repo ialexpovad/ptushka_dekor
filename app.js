@@ -4,7 +4,11 @@
    ========================================= */
 
 const CONFIG = {
-  SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdu-ukIcKN3DCYuKUXId6sTh62ieH4p7CzXN3FEPBtzo_55K8CQu00A6mhVgqt9Qn08tG7k464T3BW/pub?gid=0&single=true&output=csv", // CSV / GVIZ / JSON
+  SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdu-ukIcKN3DCYuKUXId6sTh62ieH4p7CzXN3FEPBtzo_55K8CQu00A6mhVgqt9Qn08tG7k464T3BW/pub?output=csv",
+  SHEETS: {
+    PRODUCTS_GID: "0",                        // Лист «Товары»
+    META_GID: "1891142108"                    // ← ЗАМЕНИТЕ на gid листа «Инфо»
+  },
   COLUMN_MAP: {
     sku: "sku", title: "title", price: "price", old_price: "old_price",
     image: "image", category: "category", active: "active", discount: "discount"
@@ -12,10 +16,16 @@ const CONFIG = {
   GS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzpboxaHaZSyp4nQfuDhC6TZrOpkq5m7aPlJe2E0GRdin_zFvGfj6GQQXFSw9jQl_-VaA/exec"
 };
 
+/* ===== helpers для Published CSV ===== */
+function withGid(url, gid){
+  try { const u = new URL(url); u.searchParams.set("gid", String(gid)); return u.toString(); }
+  catch { return url.replace(/gid=\d+/, `gid=${gid}`); }
+}
+
 /* ===== i18n ===== */
 const I18N = {
   ru: {
-    topbar_msg:"Букеты с доставкой по городу Хойники — быстрый заказ на сайте 🌸",
+    // topbar_msg:"Букеты с доставкой по городу Хойники — быстрый заказ на сайте 🌸",
     nav_about:"О нас", nav_catalog:"Каталог", nav_reviews:"Отзывы", nav_contacts:"Контакты", nav_delivery:"Доставка", nav_faq:"FAQ",
 
     hero_tag_city:"Хойники • Доставка", hero_tag_fresh:"Свежие цветы каждый день",
@@ -85,7 +95,7 @@ const I18N = {
     add_to_cart:"В корзину", wishlist_title:"В избранное", share_title:"Поделиться"
   },
   be: {
-    topbar_msg:"Букеты з дастаўкай па горадзе Хойнікі — хуткі заказ на сайце 🌸",
+    // topbar_msg:"Букеты з дастаўкай па горадзе Хойнікі — хуткі заказ на сайце 🌸",
     nav_about:"Пра нас", nav_catalog:"Каталог", nav_reviews:"Водгукі", nav_contacts:"Кантакты", nav_delivery:"Дастаўка", nav_faq:"FAQ",
 
     hero_tag_city:"Хойнікі • Дастаўка", hero_tag_fresh:"Свежыя кветкі штодня",
@@ -450,11 +460,11 @@ function normalizeProducts(rows){
   }).filter(p => p.title && p.active);
 }
 
-
 async function loadProducts(){
   let text = null, rows = null;
   try{
-    text = await fetchText(CONFIG.SHEET_URL);
+    const url = withGid(CONFIG.SHEET_URL, CONFIG.SHEETS.PRODUCTS_GID);
+    text = await fetchText(url);
     if (text) {
       if (text.startsWith("/*O_o*/")) rows = parseGViz(text);
       else if (text.trim().startsWith("[")) rows = JSON.parse(text);
@@ -463,13 +473,12 @@ async function loadProducts(){
   }catch(e){ console.warn("Не удалось прочитать таблицу, использую демо-товары.", e); }
   if (!rows) rows = [
     { sku:"B001", title:"Букет роз Нежность", price:"49", old_price:"59", image:"./assets/productsimg1.webp", category:"Розы", active:"true", discount:"-17%" },
-    { sku:"B002", title:"Букет тюльпан",  price:"35", old_price:"",   image:"./assets/productsimg2.webp", category:"Тюльпаны", active:"true", discount:"" },
+    { sku:"B002", title:"Букет тюльпан",      price:"35", old_price:"",   image:"./assets/productsimg2.webp", category:"Тюльпаны", active:"true", discount:"" },
     { sku:"B003", title:"Букет пионей",       price:"55", old_price:"65", image:"./assets/productsimg3.webp", category:"Пионы", active:"true", discount:"-15%" }
   ];
   state.products = normalizeProducts(rows);
   state.filtered = [...state.products];
 
-  // Заполняем категории в селекте
   const cats = Array.from(new Set(state.products.map(p => p.category).filter(Boolean))).sort();
   const catSel = el("#categorySelect"); catSel.innerHTML = `<option value="">${t("filters_all_categories")}</option>`;
   cats.forEach(c => {
@@ -478,6 +487,7 @@ async function loadProducts(){
 
   renderProducts();
 }
+
 
 /* ===== Render products ===== */
 function renderProducts(){
@@ -679,6 +689,159 @@ $(document).ready(function () {
   });
 });
 
+/* ===== Topbar: текст/скорость/вкл-выкл из листа «Инфо», закрытие без запоминания ===== */
+function pickLangCol(headers, lang){
+  const low = headers.map(h=>h.toLowerCase());
+  let idx = low.findIndex(h => h === lang);
+  if (idx<0) idx = low.findIndex(h => h.endsWith("_"+lang));
+  if (idx<0) idx = low.findIndex(h => /^(value|msg|text|content)$/.test(h));
+  if (idx<0) idx = headers[1] ? 1 : 0;
+  return headers[idx];
+}
+
+function findKeyCol(headers){
+  const low = headers.map(h=>h.toLowerCase());
+  const candidates = ["key","name","id","slug","code"];
+  const idx = candidates.map(k=>low.indexOf(k)).find(i=>i>=0);
+  return idx>=0 ? headers[idx] : null;
+}
+function isTruthy(v){
+  return /^(1|true|yes|on|да|вкл|enable|enabled)$/i.test(String(v).trim());
+}
+function findCol(headers, ...names){
+  const low = headers.map(h=>String(h).toLowerCase().trim());
+  for (const name of names.flat()){
+    const i = low.indexOf(String(name).toLowerCase());
+    if (i >= 0) return headers[i];
+  }
+  return null;
+}
+function isTruthy(v){
+  return /^(1|true|yes|on|да|вкл|enable|enabled)$/i.test(String(v).trim());
+}
+function phoneToHref(raw){
+  const hasPlus = /\+/.test(raw);
+  const digits  = String(raw).replace(/\D/g,'');
+  return "tel:" + (hasPlus ? "+" : "") + digits;
+}
+
+/** Устанавливаем все динамические контакты на странице */
+function updateContactsDynamic({ address, phone, hours, company, unp }){
+  // Доставка (карточка)
+  const addrEl = el("#deliveryAddress");
+  const phoneEl = el("#phoneLink");
+  const hoursEl = el("#deliveryHours");
+
+  if (address && addrEl) addrEl.textContent = address;
+  if (hours && hoursEl)  hoursEl.textContent = hours;
+  if (phone && phoneEl){
+    phoneEl.textContent = phone;
+    phoneEl.setAttribute("href", phoneToHref(phone));
+  }
+
+  // Подвал: адрес и телефон
+  const fAddrEl = el("#footerAddress");
+  const fPhoneEl = el("#footerPhone");
+  if (address && fAddrEl) fAddrEl.textContent = address;
+  if (phone && fPhoneEl){
+    fPhoneEl.textContent = phone;
+    fPhoneEl.setAttribute("href", phoneToHref(phone));
+  }
+
+  // Подвал: владелец + УНП (локализуем подпись)
+  const legalEl = el("#legalOwner");
+  if (legalEl && (company || unp)){
+    const ownerLabel = (state.lang === "be")
+      ? "Уладальнік"
+      : "Владелец";
+    const unpLabel = "УНП";
+    const companyTxt = company || "";
+    const unpTxt = unp ? ` ${unpLabel}: ${String(unp).trim()}` : "";
+    legalEl.textContent = `${ownerLabel}: ${companyTxt}${unpTxt}`;
+  }
+}
+
+/* ===== Topbar: msg + active из строки topbar_msg на листе «Инфо» ===== */
+async function initTopbarFromSheet(){
+  const bar = el("#topbar");
+  const mq  = el("#topbarMarquee");
+  const btn = el("#topbarClose");
+  if (!bar || !mq) return;
+
+  const html = document.documentElement;
+  const LS_DISMISS = "pt_topbar_dismissed_until";
+  const until = Number(localStorage.getItem(LS_DISMISS) || 0);
+  if (Date.now() < until){
+    bar.classList.add("topbar--out");
+    html.classList.add("topbar-closed");
+  }
+
+  btn && btn.addEventListener("click", ()=>{
+    bar.classList.add("topbar--out");
+    html.classList.add("topbar-closed");
+    const d = new Date(); d.setDate(d.getDate()+3);
+    localStorage.setItem(LS_DISMISS, String(d.getTime()));
+  });
+
+  // читаем «Инфо»
+  try{
+    const url  = withGid(CONFIG.SHEET_URL, CONFIG.SHEETS.META_GID);
+    const text = await fetchText(url);
+    if (!text) return;
+
+    const rows = text.startsWith("/*O_o*/") ? parseGViz(text)
+               : text.trim().startsWith("[") ? JSON.parse(text)
+               : parseCSV(text);
+    if (!rows?.length) return;
+
+    const headers = Object.keys(rows[0]);
+    const keyCol  = findKeyCol(headers);                  // key/name/...
+    const valCol  = pickLangCol(headers, state.lang);     // ru/be/value/...
+    const actCol  = findCol(headers, "active");
+
+    // Словарь по ключу
+    const norm = s => String(s ?? "").trim().toLowerCase();
+    const byKey = {};
+    rows.forEach(r => {
+      const k = keyCol ? norm(r[keyCol]) : "";
+      if (k) byKey[k] = r;
+    });
+    const get = (k) => {
+      const r = byKey[norm(k)];
+      if (!r) return "";
+      const v = r[valCol] ?? r.ru ?? r.be ?? r.value ?? r.msg ?? r.text ?? "";
+      return String(v ?? "").trim();
+    };
+    const isActive = (rec) => (actCol && rec) ? isTruthy(rec[actCol]) : true;
+
+    // ---- Topbar (msg + active) ----
+    const tb = byKey["topbar_msg"] || rows[0];
+    if (!tb || !isActive(tb)){
+      bar.classList.add("topbar--out");
+      html.classList.add("topbar-closed");
+    } else {
+      const msg = get("topbar_msg");
+      if (msg) mq.textContent = msg;
+      else {
+        bar.classList.add("topbar--out");
+        html.classList.add("topbar-closed");
+      }
+    }
+
+    // ---- Контакты/адрес/часы/УНП ----
+    updateContactsDynamic({
+      address: get("address"),
+      phone:   get("phone"),
+      hours:   get("hours"),
+      company: get("company_name"),
+      unp:     get("unp")
+    });
+
+  } catch(e){
+    console.warn("Topbar/Meta read failed", e);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
   // Year
   el("#year").textContent = new Date().getFullYear();
@@ -711,6 +874,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   el("#contactForm").addEventListener("submit", submitContact);
 
   Preloader.start();
+  await initTopbarFromSheet(); 
   await loadProducts();
   updateCartUI();
   Preloader.done();
