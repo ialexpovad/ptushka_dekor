@@ -760,6 +760,10 @@ function updateContactsDynamic({ address, phone, hours, company, unp }){
     legalEl.textContent = `${ownerLabel}: ${companyTxt}${unpTxt}`;
   }
 }
+function buildMapEmbedSrc(address){
+  if (!address) return "";
+  return `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
+}
 
 /* ===== Topbar: msg + active из строки topbar_msg на листе «Инфо» ===== */
 async function initTopbarFromSheet(){
@@ -837,6 +841,20 @@ async function initTopbarFromSheet(){
       unp:     get("unp")
     });
 
+    // Карта Google Maps по адресу
+    const mapFrame = el("#gmapFrame");
+    const mapCard  = el("#mapCard");
+    if (mapFrame && mapCard){
+      if (address){
+        const next = buildMapEmbedSrc(address);
+        if (next && mapFrame.src !== next) mapFrame.src = next;
+        mapCard.classList.remove("d-none");
+      } else {
+        mapCard.classList.add("d-none");
+      }
+    }
+
+    
   } catch(e){
     console.warn("Topbar/Meta read failed", e);
   }
